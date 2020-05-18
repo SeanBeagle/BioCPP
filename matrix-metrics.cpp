@@ -144,7 +144,7 @@ void RootMatrix::addSequence(std::string &seq) {
 }
 
 SeqRecord RootMatrix::operator[](size_t index) {
-  std::cout << "... RootMatrix[" << index << "]"; // TODO: REMOVE LINE
+  std::cout << "... RootMatrix[" << index << "]\n"; // TODO: REMOVE LINE
   return *records[index];
 }
 
@@ -167,7 +167,7 @@ SeqRecord::SeqRecord(
 
 char SeqRecord::operator[](unsigned index) {
   //return matrix->at(matrix->num_positions * this->index + index);
-  std::cout << "... SeqRecord[" << index << "]"; // TODO: REMOVE LINE
+  std::cout << "... SeqRecord[" << index << "]\n"; // TODO: REMOVE LINE
   return 'X';
   // return matrix->at(200);
 }
