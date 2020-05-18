@@ -62,16 +62,16 @@ class Matrix {
 // MAIN
 int main(int argc, char* argv[]) {
   if (argc > 1) {
-    std::string fasta = argv[1];
-    Matrix m = Matrix(fasta);
-    std::cout << m.fasta << " = " <<  m.numRecords() << " x " 
-              << m.numPositions() << std::endl;
+    std::string fasta = std::string(argv[1]);
+    RootMatrix root = RootMatrix::fromFasta(fasta);
+    std::cout << root.fasta << " = " <<  root.num_records() << " x " 
+              << root.num_positions << std::endl;
 
-    for (int i = 0; i < m.numRecords(); ++i) {
-      std::cout << m[i].header << std::endl;
+    for (int i = 0; i < root.num_records; ++i) {
+      std::cout << root[i].header << std::endl;
     }
     
-    std::cout << "matrix[0][10] = " << m[0][10] << std::endl;
+    std::cout << "matrix[0][10] = " << root[0][10] << std::endl;
   }
 }
 
