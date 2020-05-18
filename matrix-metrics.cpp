@@ -9,7 +9,9 @@
 class RootMatrix;
 class Matrix;
 class SeqRecord;
-class DataFrame;
+// class DataFrame;  // TODO(seanbeagle): Use this for matrix stats...
+// class Seq; // TODO(seanbeagle): Use this instead of string for sequences...
+
 
 // HEADERS
 class RootMatrix {
@@ -20,9 +22,12 @@ class RootMatrix {
     SeqRecord operator[](unsigned index);
     static RootMatrix fromFasta(std::string fasta);
   private:
-    std::vector<std::shared_ptr<SeqRecord>> records;
+    size_t current_record = -1;
     RootMatrix(std::string fasta, unsigned num_records, unsigned num_positions);
-}
+    std::vector<std::shared_ptr<SeqRecord>> records;
+    void addRecord(std::string header);
+    void addSequence(std::string seq);
+};
 
 class SeqRecord {
   public:
@@ -47,10 +52,10 @@ class Matrix {
     SeqRecord operator[](unsigned index);
     char at(unsigned index);
   private:
-    unsigned num_records = 0;
-    unsigned num_positions = 0;
-    std::shared_ptr<std::string> matrix;              //  LEARN TO USE THESE
-    std::vector<std::shared_ptr<SeqRecord>> records;  //    SMART POINTERS
+    size_t num_records = 0;
+    size_t num_positions = 0;
+    std::shared_ptr<std::string> matrix;
+    std::vector<std::shared_ptr<SeqRecord>> records;
 };
 
 
@@ -70,21 +75,40 @@ int main(int argc, char* argv[]) {
   }
 }
 
-/* RootMatrix Constructor */
-RootMatrix::RootMatrix(std::string fasta, unsigned num_records, 
-                       unsigned num_positions) 
-                       : num_positions(num_positions), num_records(num_records), 
-                         fasta(fasta) {}
+
+/*******************************************************************************
+ class RootMatrix
+ ******************************************************************************/
+
+/* Private RootMatrix Constructor */
+RootMatrix::RootMatrix(
+  std::string fasta, size_t num_records, size_t num_positions): 
+  num_positions(num_positions), fasta(fasta), num_records(num_records) {
+  std::cout << "RootMatrix()\n";  // TODO: REMOVE THIS LINE!
+
+  // READ FASTA
+  std::string line;
+  while (std::getline(file_in, line)) {
+    if (line[0] == '>') {  // IS HEADER
+      ++num_records;
+      prev_size = this_size;
+      this_size = 0;
+    } else {  // IS SEQUENCE
+      this_size += line.length();
+    }
+  }
+}
                          
-                         
-static RootMatrix RootMatrix::fromFasta(std::string fasta) {
+/* Static class method that Returns RootMatrix object from FastA file */                         
+RootMatrix RootMatrix::fromFasta(std::string fasta) {
   std::ifstream file_in (fasta);
+  // VALIDATE FILE
   if (!file_in.is_open()) {
     std::cerr << "ERROR: Can't open " << fasta << std::endl;
     exit(EXIT_FAILURE);
   }
- 
-  size_t records=0, prev_size=0, this_size=0; 
+  // GET MATRIX PARAMETERS
+  size_t num_records=0, prev_size=0, this_size=0; 
   std::string line;
   while (std::getline(file_in, line)) {
     if (line[0] == '>') {
@@ -92,14 +116,30 @@ static RootMatrix RootMatrix::fromFasta(std::string fasta) {
         std::cerr << "ERROR: Not all sequences are the same length\n";
         exit(EXIT_FAILURE);
       }
-      ++records;
+      ++num_records;
       prev_size = this_size;
       this_size = 0;
     } else {
       this_size += line.length();
     }
   }
+  // BUILD ROOT MATRIX
+  return RootMatrix(fasta, num_records, this_size);
 }
+
+void addRecord(std::string &header, std::shared_ptr<RootMatrix> matrix) {
+  std::shared_ptr<SeqRecord> ptr = SeqRecord(header, ++n, matrix);
+  records.push_back(ptr)
+}
+
+void addSequence(std::string &seq) {
+
+}
+
+
+/*******************************************************************************
+ class SeqRecord
+ ******************************************************************************/
 
 /* SeqRecord Constructor */
 SeqRecord::SeqRecord(std::string header, unsigned index, Matrix* matrix) 
@@ -124,6 +164,11 @@ Matrix::Matrix(std::string fasta): fasta(fasta) {
   }
   std::cout << "Finished loading " << matrix->size() << " nucleotides\n";
 } 
+
+
+/*******************************************************************************
+ class Matrix
+ ******************************************************************************/
 
 /* Matrix getters */
 char Matrix::at(unsigned index) { return matrix->at(index); }
