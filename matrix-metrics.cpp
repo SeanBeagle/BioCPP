@@ -22,7 +22,7 @@ class RootMatrix {
     SeqRecord operator[](unsigned index);
     static RootMatrix fromFasta(std::string fasta);
   private:
-    size_t current_record = -1;
+    size_t n = -1;
     RootMatrix(std::string fasta, size_t num_records, size_t num_positions);
     std::vector<std::shared_ptr<SeqRecord>> records;
     void addRecord(std::string header);
@@ -87,14 +87,16 @@ RootMatrix::RootMatrix(
   std::cout << "RootMatrix()\n";  // TODO: REMOVE THIS LINE!
 
   // READ FASTA
+  std::ifstream file_in (fasta);
   std::string line;
   while (std::getline(file_in, line)) {
     if (line[0] == '>') {  // IS HEADER
-      ++num_records;
-      prev_size = this_size;
-      this_size = 0;
+      std::cout << line << std::endl;
+      //++num_records;
+      //prev_size = this_size;
+      //this_size = 0;
     } else {  // IS SEQUENCE
-      this_size += line.length();
+      // do nothing....
     }
   }
 }
@@ -127,12 +129,12 @@ RootMatrix RootMatrix::fromFasta(std::string fasta) {
   return RootMatrix(fasta, num_records, this_size);
 }
 
-void addRecord(std::string &header, std::shared_ptr<RootMatrix> matrix) {
+void RootMatrix::addRecord(std::string &header, std::shared_ptr<RootMatrix> matrix) {
   std::shared_ptr<SeqRecord> ptr = SeqRecord(header, ++n, matrix);
   records.push_back(ptr)
 }
 
-void addSequence(std::string &seq) {
+void RootMatrix::addSequence(std::string &seq) {
 
 }
 
