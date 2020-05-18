@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
     
     // print SeqRecord ID's
     for (int i = 0; i < root.num_records; ++i) {
-      std::cout << root[i].id(); << ", ";
+      std::cout << root[i].id() << ", ";
     }
     std::cout << std::endl;
 
