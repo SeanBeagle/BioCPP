@@ -102,6 +102,9 @@ RootMatrix::RootMatrix(
       addSequence(line);
     }
   }
+  for (char c: matrix) {
+    std::cout << c;
+  }
 }
                          
 /* Static class method that Returns RootMatrix object from FastA file */                         
