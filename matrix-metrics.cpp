@@ -23,12 +23,13 @@ class RootMatrix {
     SeqRecord at(size_t index);
     static RootMatrix fromFasta(std::string fasta);
   private:
+    std::shared_ptr<RootMatrix> ptr;
     size_t n = -1;
     RootMatrix(std::string fasta, size_t num_records, size_t num_positions);
     std::vector<std::shared_ptr<SeqRecord>> records;
-    void addRecord(std::string &header, std::shared_ptr<RootMatrix> matrix);
+    void addHeader(std::string &header);
     void addSequence(std::string &seq);
-
+    std::string matrix;
 };
 
 class SeqRecord {
@@ -88,18 +89,16 @@ RootMatrix::RootMatrix(
   std::string fasta, size_t num_records, size_t num_positions): 
   num_positions(num_positions), fasta(fasta), num_records(num_records) {
   std::cout << "new RootMatrix()\n";  // TODO: REMOVE THIS LINE!
-
+  ptr = std::shared_ptr<RootMatrix> (this);
   // READ FASTA
   std::ifstream file_in (fasta);
   std::string line;
   while (std::getline(file_in, line)) {
-    if (line[0] == '>') {  // IS HEADER
-      std::cout << line << std::endl;
-      //++num_records;
-      //prev_size = this_size;
-      //this_size = 0;
-    } else {  // IS SEQUENCE
-      // do nothing....
+    if (line[0] == '>') {
+      std::cout << "Adding: " << line << std::endl;
+      addHeader(line);
+    } else {
+      addSequence(line);
     }
   }
 }
@@ -132,13 +131,13 @@ RootMatrix RootMatrix::fromFasta(std::string fasta) {
   return RootMatrix(fasta, num_records, this_size);
 }
 
-void RootMatrix::addRecord(std::string &header, std::shared_ptr<RootMatrix> matrix) {
-  std::shared_ptr<SeqRecord> ptr (new SeqRecord(header, ++n, matrix));
+void RootMatrix::addHeader(std::string &header) {
+  std::shared_ptr<SeqRecord> ptr (new SeqRecord(header, ++n, ptr));
   records.push_back(ptr);
 }
 
 void RootMatrix::addSequence(std::string &seq) {
-
+  sequence += seq;
 }
 
 SeqRecord RootMatrix::operator[](size_t index) {
@@ -148,6 +147,8 @@ SeqRecord RootMatrix::operator[](size_t index) {
 SeqRecord RootMatrix::at(size_t index) {
   return *records[index];
 }
+
+
 
 /*******************************************************************************
  class SeqRecord
