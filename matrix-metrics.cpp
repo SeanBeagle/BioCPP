@@ -37,6 +37,8 @@ class SeqRecord {
     const std::string header;
     const unsigned index;
     char operator[](unsigned index);
+    std::string id();
+    std::string description();
   private:
     RootMatrix* matrix;
 };
@@ -70,14 +72,19 @@ int main(int argc, char* argv[]) {
     //   std::cout << root[i].header << std::endl;
     // }
 
+    // print all SeqRecord position 0's
     for (int i = 0; i < root.num_records; ++i) {
-      std::cout << "root["<< i << "][0] = " << root[i][0] << ",";
+      std::cout << root[i][0] << ",";
     }
     std::cout << std::endl;
     
+    // print SeqRecord ID's
+    for (int i = 0; i < root.num_records; ++i) {
+      std::cout << root[i].id(); << ", ";
+    }
+    std::cout << std::endl;
 
     return EXIT_SUCCESS;
-    //std::cout << "matrix[0][10] = " << root[0][10] << std::endl;
   }
 }
 
@@ -162,10 +169,14 @@ SeqRecord::SeqRecord(
 
 
 char SeqRecord::operator[](unsigned index) {
-  // std::cout << "... SeqRecord[" << index << "]\n"; // TODO: REMOVE LINE
   return matrix->at(this->index, index);
-  // // return 'X';
-  // return matrix->at(200);
+}
+
+std::string SeqRecord::id() {
+  return header.substr(1, header.find(" ")-1);
+}
+std::string SeqRecord::description() {
+  return header.substr(header.find(" ")+1);
 }
 
 
