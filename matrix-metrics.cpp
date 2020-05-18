@@ -147,7 +147,8 @@ SeqRecord RootMatrix::operator[](size_t index) {
 }
 
 char RootMatrix::at(size_t index) {
-  return matrix[index];
+  return 'x';
+  // return matrix[index];
 }
 
 
@@ -164,10 +165,11 @@ SeqRecord::SeqRecord(
   }
 
 char SeqRecord::operator[](unsigned index) {
-  RootMatrix root = *matrix;
-  std::cout << root.fasta;
-  std::cout << matrix->fasta;
-  return 'x';
+  return 'x'
+  // RootMatrix root = *matrix;
+  // std::cout << root.fasta;
+  // std::cout << matrix->fasta;
+  // return 'x';
   // return root.at(root.num_positions * this->index + index);
 }
 
