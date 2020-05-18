@@ -1,3 +1,29 @@
+/*
+  FILE: fasta.cpp
+AUTHOR: Sean Beagle
+   URL: https://www.seanbeagle.com
+        http://stronglab.org
+DESC:   This program reads a FastA file and returns a JSON of file stats as seen
+        below. [NOTE] Actual output is single line JSON.
+
+        {
+          "fasta": {"input": "file/path.fasta", "contigs": 2, "bp": 40,
+                    "A": 10, "C": 10, "G": 10, "T": 10}, 
+          "contigs": [
+            {"id": "sequence1", "bp" 20, "A": 5, "C": 5, "G": 5, "T": 5},
+            {"id": "sequence2", "bp" 20, "A": 5, "C": 5, "G": 5, "T": 5}
+          ]
+        }
+        
+        header: Is a line starting with the '>' character and denotes a new 
+                sequence is on the following lines. The header format is assumed
+                to be: >id description.
+
+        residues: Are the characters that make up a sequence. 
+                  A vector<unsigned long> of length 256 is used to keep tally of
+                  all printable characters by ASCII value that may be included
+*/
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,7 +33,6 @@
 struct Fasta;
 struct Record;
 
-
 // HEADERS
 struct Fasta {
   Fasta(std::string input);
@@ -16,6 +41,7 @@ struct Fasta {
   unsigned long size = 0;
   unsigned contigs = 0;
   void print();
+  static void readFile(std::string &file);
   static bool isHeader(std::string &line);
 };
 
@@ -25,7 +51,7 @@ struct Record {
   std::string header = "No Header";
   std::vector<unsigned long> residues = std::vector<unsigned long>(256, 0);
   unsigned long size = 0; 
-  std::string getID();
+  std::string id();
   void print();
 };
 
@@ -38,50 +64,57 @@ int main(int argc, char* argv[]) {
     std::cerr << "Cannot Read From stdin... Yet!" << std::endl;
     exit(EXIT_FAILURE);
   } else {
-      // READ FROM: file
-      std::cout << "Reading File: " << argv[1] << std::endl;
-      std::ifstream file_in (argv[1]);
-      if (!file_in.is_open()) {
-        std::cerr <<  "ERROR: Can't Open File: " << argv[1] << std::endl;
-        exit(EXIT_FAILURE);
-      }
-      
-      // Initialize objects
-      Fasta fasta = Fasta(std::string(argv[1]));
-      Record record;
-      std::string line;
+    Fasta::readFile(std::string(argv[1]);
+  }
+}
 
-      // Validate that first line is a header
-      std::getline(file_in, line);
-      if (Fasta::isHeader(line)) {
-        record = Record(line);
-      } else {
-          std::cerr << "ERROR: FastA does not start with >header" << std::endl;
-          exit(EXIT_FAILURE);
-      }
+void Fasta::readFile(std::string &file) {
+  // READ FROM: file
+  std::ifstream file_in (file);
+  if (!file_in.is_open()) {
+    std::cerr <<  "ERROR: Can't Open File: " << argv[1] << std::endl;
+    exit(EXIT_FAILURE);
+  }
+      
+  // Initialize objects
+  Fasta fasta = Fasta(file);
+  Record record;
+  std::string line;
+
+  // Validate: First line is >header
+  // TODO(seanbeagle): Consider single sequence FastA with no header?
+  std::getline(file_in, line);
+  if (Fasta::isHeader(line)) {
+    ++fasta.contigs;
+    record = Record(line);
+  } else {
+    std::cerr << "ERROR: FastA does not start with a >header" << std::endl;
+    exit(EXIT_FAILURE);
+  }
      
-      std::cout << "{ \"records\" : [";
-      // Continue reading lines
-      while (std::getline(file_in, line)) {
-        if (Fasta::isHeader(line)) {
-          record.print();
-          std::cout << ", ";
-          record = Record(line);
-        } else {
-          fasta.size += line.length();
-          record.size += line.length();
-          for (auto residue: line) {
-            // std::cout << c << std::endl;
-            ++fasta.residues[residue];
-            ++record.residues[residue];
-          }
-        }
-      }
+  // Continue reading lines and streaming JSON output
+  std::cout << "{\"contigs\": [";
+  while (std::getline(file_in, line)) {
+    if (Fasta::isHeader(line)) {
       record.print();
-      std::cout << "], \"fasta\": ";
-      fasta.print(); 
-      std::cout << "}\n";
-   }
+      std::cout << ", ";
+      ++fasta.contigs;
+      record = Record(line);
+    } else {
+      fasta.size += line.length();
+      record.size += line.length();
+      for (auto residue: line) {
+        ++fasta.residues[residue];
+        ++record.residues[residue];
+      }
+    }
+  }
+  // Print final record + fasta information, and close JSON
+  record.print();
+  std::cout << "], \"fasta\": ";
+  fasta.print(); 
+  std::cout << "}\n";
+  }
 }
 
 /* Fasta Constructor */
@@ -94,7 +127,8 @@ Record::Record():header("No Header") {}
 /* Print FastA JSON */
 void Fasta::print() {
   std::cout << "{\"input\": \"" << input << "\"" 
-            << ", \"bp\": " << size; 
+            << ", \"bp\": " << size
+            << ", \"contigs\": " << contigs; 
   for (int i = 0; i < residues.size(); ++i) {
     if (residues[i] > 0) {
         std::cout << ", \""<< (char) i << "\": " << residues[i];  
@@ -105,7 +139,7 @@ void Fasta::print() {
 
 /* Print Record JSON */
 void Record::print() {
-  std::cout << "{\"id\": \"" << getID() 
+  std::cout << "{\"id\": \"" << id() 
             << ", \"bp\": " << size; 
   for (int i = 0; i < residues.size(); ++i) {
     if (residues[i] > 0) {
@@ -120,7 +154,7 @@ bool Fasta::isHeader(std::string &line) {
   return line[0] ==  '>';
 }
 
-std::string Record::getID() {
+std::string Record::id() {
   return header.substr(1, header.find(' ') - 1);
 }
 
