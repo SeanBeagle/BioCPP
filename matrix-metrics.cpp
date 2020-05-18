@@ -32,18 +32,18 @@ class RootMatrix {
 class SeqRecord {
   public:
     SeqRecord(std::string header, unsigned index, 
-              std::shared_pointer<RootMatrix> matrix);
+              std::shared_ptr<RootMatrix> matrix);
     const std::string header;
     const unsigned index;
     char operator[](unsigned index);
   private:
-    std::shared_pointer<RootMatrix> matrix;
+    std::shared_ptr<RootMatrix> matrix;
 };
 
 class Matrix {
   public:
     Matrix(size_t num_positions, 
-           std::vector<std::shared_pointer<SeqRecord>> records);
+           std::vector<std::shared_ptr<SeqRecord>> records);
     std::string const fasta;
     unsigned numRecords();
     unsigned numPositions();
