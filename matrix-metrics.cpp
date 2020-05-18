@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
 
     for (int i = 0; i < root.num_records; ++i) {
       SeqRecord record = *root.at(i);
-      std::cout << *record.header << std::endl;
+      std::cout << record.header << std::endl;
     }
     
     //std::cout << "matrix[0][10] = " << root[0][10] << std::endl;
