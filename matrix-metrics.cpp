@@ -23,7 +23,7 @@ class RootMatrix {
     static RootMatrix fromFasta(std::string fasta);
   private:
     size_t current_record = -1;
-    RootMatrix(std::string fasta, unsigned num_records, unsigned num_positions);
+    RootMatrix(std::string fasta, size_t num_records, size_t num_positions);
     std::vector<std::shared_ptr<SeqRecord>> records;
     void addRecord(std::string header);
     void addSequence(std::string seq);
@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
   if (argc > 1) {
     std::string fasta = std::string(argv[1]);
     RootMatrix root = RootMatrix::fromFasta(fasta);
-    std::cout << root.fasta << " = " <<  root.num_records() << " x " 
+    std::cout << root.fasta << " = " <<  root.num_records << " x " 
               << root.num_positions << std::endl;
 
     for (int i = 0; i < root.num_records; ++i) {
