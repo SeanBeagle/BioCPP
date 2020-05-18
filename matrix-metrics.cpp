@@ -152,7 +152,7 @@ SeqRecord RootMatrix::operator[](size_t index) {
 }
 
 char RootMatrix::operator()(size_t record, size_t position) {
-  return matrix[record*numPositions() + position];
+  return matrix_[record*numPositions() + position];
 }
 
 // member function getters
