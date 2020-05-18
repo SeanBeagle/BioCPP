@@ -130,7 +130,7 @@ RootMatrix RootMatrix::fromFasta(std::string fasta) {
 }
 
 void RootMatrix::addRecord(std::string &header, std::shared_ptr<RootMatrix> matrix) {
-  std::shared_ptr<SeqRecord> ptr (SeqRecord(header, ++n, matrix));
+  std::shared_ptr<SeqRecord> ptr (new SeqRecord(header, ++n, matrix));
   records.push_back(ptr);
 }
 
