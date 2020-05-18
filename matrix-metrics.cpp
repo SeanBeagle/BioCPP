@@ -25,8 +25,8 @@ class RootMatrix {
     size_t n = -1;
     RootMatrix(std::string fasta, size_t num_records, size_t num_positions);
     std::vector<std::shared_ptr<SeqRecord>> records;
-    void addRecord(std::string header);
-    void addSequence(std::string seq);
+    void addRecord(std::string &header, std::shared_ptr<RootMatrix> matrix);
+    void addSequence(std::string &seq);
 };
 
 class SeqRecord {
