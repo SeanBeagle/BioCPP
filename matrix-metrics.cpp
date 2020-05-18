@@ -165,7 +165,7 @@ SeqRecord::SeqRecord(
   }
 
 char SeqRecord::operator[](unsigned index) {
-  return 'x'
+  return 'x';
   // RootMatrix root = *matrix;
   // std::cout << root.fasta;
   // std::cout << matrix->fasta;
