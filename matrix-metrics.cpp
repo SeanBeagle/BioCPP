@@ -165,7 +165,8 @@ SeqRecord::SeqRecord(
 
 
 char SeqRecord::operator[](unsigned index) {
-  return matrix->at(matrix->num_positions * this->index + index);
+  //return matrix->at(matrix->num_positions * this->index + index);
+  return matrix->at(200);
 }
 
 
