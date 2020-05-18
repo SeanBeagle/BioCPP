@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
 RootMatrix::RootMatrix(
   std::string fasta, size_t num_records, size_t num_positions): 
   num_positions(num_positions), fasta(fasta), num_records(num_records) {
-  std::cout << "new RootMatrix(" << fasta << ")\n";  // TODO: REMOVE LINE
+  std::cout << "new RootMatrix(\"" << fasta << "\")\n";  // TODO: REMOVE LINE
   ptr = std::shared_ptr<RootMatrix> (this);
   // READ FASTA
   std::ifstream file_in (fasta);
@@ -159,7 +159,7 @@ char RootMatrix::at(size_t index) {
 SeqRecord::SeqRecord(
   std::string header, unsigned index, std::shared_ptr<RootMatrix> matrix) 
   : header(header), index(index) {
-    std::cout << "SeqRecord(" << header << ")\n"; // TODO: REMOVE LINE
+    std::cout << "new SeqRecord(\"" << header << "\")\n"; // TODO: REMOVE LINE
   }
 
 char SeqRecord::operator[](unsigned index) {
