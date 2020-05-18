@@ -143,7 +143,7 @@ void RootMatrix::addHeader(std::string &header) {
 }
 
 void RootMatrix::addSequence(std::string &seq) {
-  matrix += seq;
+  matrix_ += seq;
 }
 
 SeqRecord RootMatrix::operator[](size_t index) {
@@ -152,7 +152,7 @@ SeqRecord RootMatrix::operator[](size_t index) {
 }
 
 char RootMatrix::operator()(size_t record, size_t position) {
-  return matrix[record*num_positions + position];
+  return matrix[record*numPositions() + position];
 }
 
 // member function getters
@@ -176,11 +176,11 @@ char SeqRecord::operator[](size_t position) {
 size_t SeqRecord::index() {return index_;}
 
 std::string SeqRecord::id() {
-  return header.substr(1, header.find(" ")-1);
+  return header_.substr(1, header_.find(" ")-1);
 }
 
 std::string SeqRecord::description() {
-  return header.substr(header.find(" ")+1);
+  return header_.substr(header_.find(" ")+1);
 }
 
 
