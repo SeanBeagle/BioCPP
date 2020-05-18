@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
     //   std::cout << root[i].header << std::endl;
     // }
 
-    std::cout << "root[10][10] = " << root[10][10] << std::endl;
+    std::cout << "root[10].header = " << root[10].header << std::endl;
 
     return EXIT_SUCCESS;
     //std::cout << "matrix[0][10] = " << root[0][10] << std::endl;
