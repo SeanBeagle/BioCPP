@@ -73,8 +73,8 @@ int main(int argc, char* argv[]) {
     // for (int i = 0; i < root.num_records; ++i) {
     //   std::cout << root[i].header << std::endl;
     // }
-              
-    std::cout << "root.at(10) = " << root.at(10);
+
+    std::cout << "root.at(10) = " << root.at(10) << std::endl;
     std::cout << "root[10].header = " << root[10].header << std::endl;
     
 
@@ -148,8 +148,7 @@ SeqRecord RootMatrix::operator[](size_t index) {
 }
 
 char RootMatrix::at(size_t index) {
-  return 'x';
-  // return matrix[index];
+  return matrix[index];
 }
 
 
