@@ -23,10 +23,9 @@ class RootMatrix {
     char at(size_t index);
     static RootMatrix fromFasta(std::string fasta);
   private:
-    std::shared_ptr<RootMatrix> ptr;
     size_t n = -1;
     RootMatrix(std::string fasta, size_t num_records, size_t num_positions);
-    std::vector<std::shared_ptr<SeqRecord>> records;
+    std::vector<SeqRecord> records;
     void addHeader(std::string &header);
     void addSequence(std::string &seq);
     std::string matrix;
@@ -34,31 +33,28 @@ class RootMatrix {
 
 class SeqRecord {
   public:
-    SeqRecord(std::string header, unsigned index, 
-              std::shared_ptr<RootMatrix> matrix);
+    SeqRecord(std::string header, unsigned index, RootMatrix* matrix);
     const std::string header;
     const unsigned index;
     char operator[](unsigned index);
   private:
-    std::shared_ptr<RootMatrix> matrix;
+    RootMatrix* matrix;
 };
 
 class Matrix {
   public:
-    Matrix(size_t num_positions, 
-           std::vector<std::shared_ptr<SeqRecord>> records);
+    Matrix(size_t num_positions, std::vector<SeqRecord*> records);
     std::string const fasta;
     unsigned numRecords();
     unsigned numPositions();
     void operator+=(SeqRecord);
     void operator+=(std::string sequence);
-    std::shared_ptr<SeqRecord> operator[](size_t index);
+    SeqRecord operator[](size_t index);
     char at(unsigned index);
   private:
     size_t num_records = 0;
     size_t num_positions = 0;
-    std::shared_ptr<std::string> matrix;
-    std::vector<std::shared_ptr<SeqRecord>> records;
+    std::vector<SeqRecord*> records;
 };
 
 
@@ -93,7 +89,6 @@ RootMatrix::RootMatrix(
   std::string fasta, size_t num_records, size_t num_positions): 
   num_positions(num_positions), fasta(fasta), num_records(num_records) {
   std::cout << "new RootMatrix(\"" << fasta << "\")\n";  // TODO: REMOVE LINE
-  ptr = std::shared_ptr<RootMatrix> (this);
   // READ FASTA
   std::ifstream file_in (fasta);
   std::string line;
@@ -135,8 +130,7 @@ RootMatrix RootMatrix::fromFasta(std::string fasta) {
 }
 
 void RootMatrix::addHeader(std::string &header) {
-  std::shared_ptr<SeqRecord> sp (new SeqRecord(header, ++n, ptr));
-  records.push_back(sp);
+  records.emplace_back(SeqRecord(header, ++n, this));
 }
 
 void RootMatrix::addSequence(std::string &seq) {
@@ -145,11 +139,11 @@ void RootMatrix::addSequence(std::string &seq) {
 
 SeqRecord RootMatrix::operator[](size_t index) {
   std::cout << "... RootMatrix[" << index << "]\n"; // TODO: REMOVE LINE
-  return *records[index];
+  return records[index];
 }
 
-char RootMatrix::at(size_t index) {
-  return matrix[index];
+char RootMatrix::at(size_t record, size_t position) {
+  return matrix[record*num_positions + position];
 }
 
 
@@ -159,17 +153,17 @@ char RootMatrix::at(size_t index) {
 
 /* SeqRecord Constructor */
 SeqRecord::SeqRecord(
-  std::string header, unsigned index, std::shared_ptr<RootMatrix> matrix) 
-  : header(header), index(index) {
+  std::string header, unsigned index, RootMatrix* matrix) 
+  : header(header), index(index), matrix(matrix) {
     std::cout << "new SeqRecord(\"" << header << "\")\n"; // TODO: REMOVE LINE
   }
 
 
 char SeqRecord::operator[](unsigned index) {
-  //return matrix->at(matrix->num_positions * this->index + index);
   std::cout << "... SeqRecord[" << index << "]\n"; // TODO: REMOVE LINE
-  // return 'X';
-  return (*matrix).at(200);
+  return matrix->at(this->index, index);
+  // // return 'X';
+  // return matrix->at(200);
 }
 
 
