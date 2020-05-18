@@ -19,7 +19,7 @@ class RootMatrix {
     const size_t num_records;
     const size_t num_positions;
     const std::string fasta;
-    SeqRecord operator[](unsigned index);
+    std::shared_ptr<SeqRecord> operator[](size_t index);
     static RootMatrix fromFasta(std::string fasta);
   private:
     size_t n = -1;
@@ -71,7 +71,7 @@ int main(int argc, char* argv[]) {
       std::cout << root[i].header << std::endl;
     }
     
-    std::cout << "matrix[0][10] = " << root[0][10] << std::endl;
+    //std::cout << "matrix[0][10] = " << root[0][10] << std::endl;
   }
 }
 
@@ -138,6 +138,9 @@ void RootMatrix::addSequence(std::string &seq) {
 
 }
 
+std::shared_ptr<SeqRecord> RootMatrix::operator[](size_t index) {
+  return records[index];
+}
 
 /*******************************************************************************
  class SeqRecord
