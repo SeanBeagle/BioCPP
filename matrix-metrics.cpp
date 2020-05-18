@@ -163,7 +163,8 @@ SeqRecord::SeqRecord(
   }
 
 char SeqRecord::operator[](unsigned index) {
-  return matrix->at(matrix->num_positions * this->index + index);
+  RootMatrix root = *matrix;
+  return root.at(root.num_positions * this->index + index);
 }
 
 /*******************************************************************************
