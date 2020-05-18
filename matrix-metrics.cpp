@@ -130,7 +130,7 @@ RootMatrix RootMatrix::fromFasta(std::string fasta) {
 }
 
 void RootMatrix::addRecord(std::string &header, std::shared_ptr<RootMatrix> matrix) {
-  std::shared_ptr<SeqRecord> ptr = new SeqRecord(header, ++n, matrix);
+  std::shared_ptr<SeqRecord> ptr (SeqRecord(header, ++n, matrix));
   records.push_back(ptr);
 }
 
@@ -155,20 +155,20 @@ char SeqRecord::operator[](unsigned index) {
 }
 
 /* Matrix Constructor from FastA file format */  
-Matrix::Matrix(std::string fasta): fasta(fasta) {
-  this->matrix = (new std::string());
-  std::ifstream file(fasta);
-  std::string line;
-  while (std::getline(file, line)) {
-    if (line[0] == '>') {
-      records.emplace_back(SeqRecord(line, num_records++, this));
-    } else {
-      num_positions += line.length();
-      *matrix += line;
-    }
-  }
-  std::cout << "Finished loading " << matrix->size() << " nucleotides\n";
-} 
+// Matrix::Matrix(std::string fasta): fasta(fasta) {
+//   this->matrix = (new std::string());
+//   std::ifstream file(fasta);
+//   std::string line;
+//   while (std::getline(file, line)) {
+//     if (line[0] == '>') {
+//       records.emplace_back(SeqRecord(line, num_records++, this));
+//     } else {
+//       num_positions += line.length();
+//       *matrix += line;
+//     }
+//   }
+//   std::cout << "Finished loading " << matrix->size() << " nucleotides\n";
+// } 
 
 
 /*******************************************************************************
