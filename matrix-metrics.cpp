@@ -150,9 +150,9 @@ SeqRecord::SeqRecord(
     std::cout << "SeqRecord()\n";
   }
 
-char SeqRecord::operator[](unsigned index) {
-  return *matrix[(matrix->num_positions * this->index + index)];
-}
+// char SeqRecord::operator[](unsigned index) {
+//   return *matrix[(matrix->num_positions * this->index + index)];
+// }
 
 /*******************************************************************************
  class Matrix
