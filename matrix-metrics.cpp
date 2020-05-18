@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
               << root.num_positions << std::endl;
 
     for (int i = 0; i < root.num_records; ++i) {
-      std::shared_ptr<SeqRecord> = SeqRecord record = root.at(i);
+      std::shared_ptr<SeqRecord> record = SeqRecord record = root.at(i);
       std::cout << *record.header << std::endl;
     }
     
