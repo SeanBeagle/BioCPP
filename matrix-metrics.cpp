@@ -140,7 +140,7 @@ void RootMatrix::addSequence(std::string &seq) {
 }
 
 SeqRecord RootMatrix::operator[](size_t index) {
-  std::cout << "... RootMatrix[" << index << "]\n"; // TODO: REMOVE LINE
+  // std::cout << "... RootMatrix[" << index << "]\n"; // TODO: REMOVE LINE
   return records[index];
 }
 
@@ -162,7 +162,7 @@ SeqRecord::SeqRecord(
 
 
 char SeqRecord::operator[](unsigned index) {
-  std::cout << "... SeqRecord[" << index << "]\n"; // TODO: REMOVE LINE
+  // std::cout << "... SeqRecord[" << index << "]\n"; // TODO: REMOVE LINE
   return matrix->at(this->index, index);
   // // return 'X';
   // return matrix->at(200);
