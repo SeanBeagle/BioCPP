@@ -169,7 +169,7 @@ char SeqRecord::operator[](unsigned index) {
   //return matrix->at(matrix->num_positions * this->index + index);
   std::cout << "... SeqRecord[" << index << "]\n"; // TODO: REMOVE LINE
   return 'X';
-  // return matrix->at(200);
+  return (*matrix).at(200);
 }
 
 
