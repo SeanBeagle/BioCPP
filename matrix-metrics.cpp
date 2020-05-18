@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
       std::cout << root[i].header << std::endl;
     }
 
-    std::cout << "root[i][10] = " << root[i][10] << std::endl;
+    std::cout << "root[10][10] = " << root[10][10] << std::endl;
 
     return EXIT_SUCCESS;
     //std::cout << "matrix[0][10] = " << root[0][10] << std::endl;
@@ -164,7 +164,7 @@ SeqRecord::SeqRecord(
   }
 
 char SeqRecord::operator[](unsigned index) {
-  return matrix.->at(matrix->num_positions * this->index + index);
+  return matrix->at(matrix->num_positions * this->index + index);
 }
 
 /*******************************************************************************
