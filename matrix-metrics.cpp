@@ -70,9 +70,9 @@ int main(int argc, char* argv[]) {
     std::cout << root.fasta << " = " <<  root.num_records << " x " 
               << root.num_positions << std::endl;
 
-    for (int i = 0; i < root.num_records; ++i) {
-      std::cout << root[i].header << std::endl;
-    }
+    // for (int i = 0; i < root.num_records; ++i) {
+    //   std::cout << root[i].header << std::endl;
+    // }
 
     std::cout << "root[10][10] = " << root[10][10] << std::endl;
 
