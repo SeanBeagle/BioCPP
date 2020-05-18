@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
     //   std::cout << root[i].header << std::endl;
     // }
 
-    std::cout << "root.at(10) = " << root.at(10) << std::endl;
+    std::cout << "root[10][10] = " << root[10][10] << std::endl;
     std::cout << "root[10].header = " << root[10].header << std::endl;
     
 
@@ -165,13 +165,9 @@ SeqRecord::SeqRecord(
 
 
 char SeqRecord::operator[](unsigned index) {
-  return 'x';
-  // RootMatrix root = *matrix;
-  // std::cout << root.fasta;
-  // std::cout << matrix->fasta;
-  // return 'x';
-  // return root.at(root.num_positions * this->index + index);
+  return roo->at(root->num_positions * this->index + index);
 }
+
 
 /*******************************************************************************
  class Matrix
