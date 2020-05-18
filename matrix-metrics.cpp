@@ -132,8 +132,8 @@ RootMatrix RootMatrix::fromFasta(std::string fasta) {
 }
 
 void RootMatrix::addHeader(std::string &header) {
-  std::shared_ptr<SeqRecord> ptr (new SeqRecord(header, ++n, ptr));
-  records.push_back(ptr);
+  std::shared_ptr<SeqRecord> sp (new SeqRecord(header, ++n, ptr));
+  records.push_back(sp);
 }
 
 void RootMatrix::addSequence(std::string &seq) {
