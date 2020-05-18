@@ -137,7 +137,7 @@ void RootMatrix::addHeader(std::string &header) {
 }
 
 void RootMatrix::addSequence(std::string &seq) {
-  sequence += seq;
+  matrix += seq;
 }
 
 SeqRecord RootMatrix::operator[](size_t index) {
