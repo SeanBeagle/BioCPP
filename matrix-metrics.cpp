@@ -21,7 +21,7 @@ class RootMatrix {
     std::string fasta();
 
     SeqRecord operator[](size_t index);
-    SeqRecord operator()(size_t record, size_t position);
+    char operator()(size_t record, size_t position);
     char at(size_t record, size_t position); // Replaced by operator[]
     static RootMatrix fromFasta(std::string fasta);
   private:
@@ -156,9 +156,9 @@ char RootMatrix::operator()(size_t record, size_t position) {
 }
 
 // member function getters
-size_t numRecords() {return this->num_records_;}
-size_t numPositions() {return this->num_positions_;}
-std::string fasta() {return this->fasta_;}
+size_t RootMatrix::numRecords() {return this->num_records_;}
+size_t RootMatrix::numPositions() {return this->num_positions_;}
+std::string RootMatrix::fasta() {return this->fasta_;}
 
 /*******************************************************************************
  class SeqRecord
@@ -173,7 +173,7 @@ char SeqRecord::operator[](size_t position) {
   return (*matrix_)(index_, position);
 }
 
-size_t index() {return index_;}
+size_t SeqRecord::index() {return index_;}
 
 std::string SeqRecord::id() {
   return header.substr(1, header.find(" ")-1);
