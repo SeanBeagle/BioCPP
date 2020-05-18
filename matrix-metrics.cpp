@@ -16,31 +16,37 @@ class SeqRecord;
 // HEADERS
 class RootMatrix {
   public:
-    const size_t num_records;
-    const size_t num_positions;
-    const std::string fasta;
+    size_t numRecords();
+    size_t numPositions();
+    std::string fasta();
+
     SeqRecord operator[](size_t index);
-    char at(size_t record, size_t position);
+    SeqRecord operator()(size_t record, size_t position);
+    char at(size_t record, size_t position); // Replaced by operator[]
     static RootMatrix fromFasta(std::string fasta);
   private:
+    size_t num_records_;
+    size_t num_positions_;
+    std::string fasta_;
+    std::string matrix_;
+    std::vector<SeqRecord> records_;
     size_t n = -1;
     RootMatrix(std::string fasta, size_t num_records, size_t num_positions);
-    std::vector<SeqRecord> records;
     void addHeader(std::string &header);
     void addSequence(std::string &seq);
-    std::string matrix;
 };
 
 class SeqRecord {
   public:
-    SeqRecord(std::string header, unsigned index, RootMatrix* matrix);
-    const std::string header;
-    const unsigned index;
-    char operator[](unsigned index);
+    SeqRecord(std::string header, size_t index, RootMatrix* matrix);
+    char operator[](size_t position);
     std::string id();
+    size_t index();
     std::string description();
   private:
-    RootMatrix* matrix;
+    std::string header_;
+    size_t index_;
+    RootMatrix* matrix_;
 };
 
 class Matrix {
@@ -65,21 +71,17 @@ int main(int argc, char* argv[]) {
   if (argc > 1) {
     std::string fasta = std::string(argv[1]);
     RootMatrix root = RootMatrix::fromFasta(fasta);
-    std::cout << root.fasta << " = " <<  root.num_records << " x " 
-              << root.num_positions << std::endl;
-
-    // for (int i = 0; i < root.num_records; ++i) {
-    //   std::cout << root[i].header << std::endl;
-    // }
+    std::cout << root.fasta() << " = " <<  root.numRecords() << " x " 
+              << root.numPositions() << std::endl;
 
     // print all SeqRecord position 0's
-    for (int i = 0; i < root.num_records; ++i) {
+    for (int i = 0; i < root.numRecords(); ++i) {
       std::cout << root[i][0] << ",";
     }
     std::cout << std::endl;
     
     // print SeqRecord ID's
-    for (int i = 0; i < root.num_records; ++i) {
+    for (int i = 0; i < root.numRecords(); ++i) {
       std::cout << root[i].id() << ", ";
     }
     std::cout << std::endl;
@@ -91,13 +93,12 @@ int main(int argc, char* argv[]) {
 
 /*******************************************************************************
  class RootMatrix
- ******************************************************************************/
+*******************************************************************************/
 
 /* Private RootMatrix Constructor */
 RootMatrix::RootMatrix(
   std::string fasta, size_t num_records, size_t num_positions): 
-  num_positions(num_positions), fasta(fasta), num_records(num_records) {
-  std::cout << "new RootMatrix(\"" << fasta << "\")\n";  // TODO: REMOVE LINE
+  num_positions_(num_positions), fasta_(fasta), num_records_(num_records) {
   // READ FASTA
   std::ifstream file_in (fasta);
   std::string line;
@@ -134,12 +135,11 @@ RootMatrix RootMatrix::fromFasta(std::string fasta) {
       this_size += line.length();
     }
   }
-  // BUILD ROOT MATRIX
   return RootMatrix(fasta, num_records, this_size);
 }
 
 void RootMatrix::addHeader(std::string &header) {
-  records.emplace_back(SeqRecord(header, ++n, this));
+  records_.emplace_back(SeqRecord(header, ++n, this));
 }
 
 void RootMatrix::addSequence(std::string &seq) {
@@ -148,13 +148,17 @@ void RootMatrix::addSequence(std::string &seq) {
 
 SeqRecord RootMatrix::operator[](size_t index) {
   // std::cout << "... RootMatrix[" << index << "]\n"; // TODO: REMOVE LINE
-  return records[index];
+  return records_[index];
 }
 
-char RootMatrix::at(size_t record, size_t position) {
+char RootMatrix::operator()(size_t record, size_t position) {
   return matrix[record*num_positions + position];
 }
 
+// member function getters
+size_t numRecords() {return this->num_records_;}
+size_t numPositions() {return this->num_positions_;}
+std::string fasta() {return this->fasta_;}
 
 /*******************************************************************************
  class SeqRecord
@@ -162,19 +166,19 @@ char RootMatrix::at(size_t record, size_t position) {
 
 /* SeqRecord Constructor */
 SeqRecord::SeqRecord(
-  std::string header, unsigned index, RootMatrix* matrix) 
-  : header(header), index(index), matrix(matrix) {
-    std::cout << "new SeqRecord(\"" << header << "\")\n"; // TODO: REMOVE LINE
-  }
+  std::string header, size_t index, RootMatrix* matrix) 
+  : header_(header), index_(index), matrix_(matrix) {}
 
-
-char SeqRecord::operator[](unsigned index) {
-  return matrix->at(this->index, index);
+char SeqRecord::operator[](size_t position) {
+  return (*matrix_)(index_, position);
 }
+
+size_t index() {return index_;}
 
 std::string SeqRecord::id() {
   return header.substr(1, header.find(" ")-1);
 }
+
 std::string SeqRecord::description() {
   return header.substr(header.find(" ")+1);
 }
