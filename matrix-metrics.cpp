@@ -144,15 +144,19 @@ void RootMatrix::addSequence(std::string &seq) {
  ******************************************************************************/
 
 /* SeqRecord Constructor */
-// SeqRecord::SeqRecord(
-//   std::string header, unsigned index, std::shared_ptr<RootMatrix> matrix) 
-//   : header(header), index(index) {
-//     std::cout << "SeqRecord()\n";
-//   }
+SeqRecord::SeqRecord(
+  std::string header, unsigned index, std::shared_ptr<RootMatrix> matrix) 
+  : header(header), index(index) {
+    std::cout << "SeqRecord()\n";
+  }
 
-// char SeqRecord::operator[](unsigned index) {
-//   return *matrix[(matrix->num_positions * this->index + index)];
-// }
+char SeqRecord::operator[](unsigned index) {
+  return *matrix[(matrix->num_positions * this->index + index)];
+}
+
+/*******************************************************************************
+ class Matrix
+ ******************************************************************************/
 
 /* Matrix Constructor from FastA file format */  
 // Matrix::Matrix(std::string fasta): fasta(fasta) {
@@ -171,13 +175,11 @@ void RootMatrix::addSequence(std::string &seq) {
 // } 
 
 
-/*******************************************************************************
- class Matrix
- ******************************************************************************/
+
 
 /* Matrix getters */
-char Matrix::at(unsigned index) { return matrix->at(index); }
-SeqRecord Matrix::operator[](unsigned index) { return records[index]; }
-unsigned Matrix::numRecords() { return num_records; }
-unsigned Matrix::numPositions() { return num_positions; }
+// char Matrix::at(unsigned index) { return matrix->at(index); }
+// SeqRecord Matrix::operator[](unsigned index) { return records[index]; }
+// unsigned Matrix::numRecords() { return num_records; }
+// unsigned Matrix::numPositions() { return num_positions; }
 
