@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cstddef>
 #include <string>
 #include <vector>
 #include <memory>
@@ -11,20 +12,33 @@ class SeqRecord;
 class DataFrame;
 
 // HEADERS
+class RootMatrix {
+  public:
+    const size_t num_records;
+    const size_t num_positions;
+    const std::string fasta;
+    SeqRecord operator[](unsigned index);
+    static RootMatrix fromFasta(std::string fasta);
+  private:
+    std::vector<std::shared_ptr<SeqRecord>> records;
+    RootMatrix(std::string fasta, unsigned num_records, unsigned num_positions);
+}
+
 class SeqRecord {
   public:
-    SeqRecord(std::string header, unsigned index, Matrix* matrix);
+    SeqRecord(std::string header, unsigned index, 
+              std::shared_pointer<RootMatrix> matrix);
     const std::string header;
     const unsigned index;
     char operator[](unsigned index);
   private:
-    Matrix* matrix;
+    std::shared_pointer<RootMatrix> matrix;
 };
 
 class Matrix {
   public:
-    Matrix(std::string fasta);
-    Matrix(std::shared_ptr<std::string> matrix, std::vector<SeqRecord> records);
+    Matrix(size_t num_positions, 
+           std::vector<std::shared_pointer<SeqRecord>> records);
     std::string const fasta;
     unsigned numRecords();
     unsigned numPositions();
@@ -35,10 +49,8 @@ class Matrix {
   private:
     unsigned num_records = 0;
     unsigned num_positions = 0;
-    std::shared_ptr<std::string> matrix_;              //  LEARN TO USE THESE
-    std::vector<std::shared_ptr<SeqRecord>> records_;  //    SMART POINTERS
-    std::string* matrix;
-    std::vector<SeqRecord> records;
+    std::shared_ptr<std::string> matrix;              //  LEARN TO USE THESE
+    std::vector<std::shared_ptr<SeqRecord>> records;  //    SMART POINTERS
 };
 
 
@@ -58,6 +70,36 @@ int main(int argc, char* argv[]) {
   }
 }
 
+/* RootMatrix Constructor */
+RootMatrix::RootMatrix(std::string fasta, unsigned num_records, 
+                       unsigned num_positions) 
+                       : num_positions(num_positions), num_records(num_records), 
+                         fasta(fasta) {}
+                         
+                         
+static RootMatrix RootMatrix::fromFasta(std::string fasta) {
+  std::ifstream file_in (fasta);
+  if (!file_in.is_open()) {
+    std::cerr << "ERROR: Can't open " << fasta << std::endl;
+    exit(EXIT_FAILURE);
+  }
+ 
+  size_t records=0, prev_size=0, this_size=0; 
+  std::string line;
+  while (std::getline(file_in, line)) {
+    if (line[0] == '>') {
+      if (prev_size > 0 && prev_size != this_size) {
+        std::cerr << "ERROR: Not all sequences are the same length\n";
+        exit(EXIT_FAILURE);
+      }
+      ++records;
+      prev_size = this_size;
+      this_size = 0;
+    } else {
+      this_size += line.length();
+    }
+  }
+}
 
 /* SeqRecord Constructor */
 SeqRecord::SeqRecord(std::string header, unsigned index, Matrix* matrix) 
