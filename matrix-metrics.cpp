@@ -49,7 +49,7 @@ class Matrix {
     unsigned numPositions();
     void operator+=(SeqRecord);
     void operator+=(std::string sequence);
-    SeqRecord operator[](unsigned index);
+    std::shared_ptr<SeqRecord> operator[](size_t index);
     char at(unsigned index);
   private:
     size_t num_records = 0;
@@ -144,15 +144,15 @@ void RootMatrix::addSequence(std::string &seq) {
  ******************************************************************************/
 
 /* SeqRecord Constructor */
-SeqRecord::SeqRecord(
-  std::string header, unsigned index, std::shared_ptr<RootMatrix> matrix) 
-  : header(header), index(index) {
-    std::cout << "SeqRecord()\n";
-  }
+// SeqRecord::SeqRecord(
+//   std::string header, unsigned index, std::shared_ptr<RootMatrix> matrix) 
+//   : header(header), index(index) {
+//     std::cout << "SeqRecord()\n";
+//   }
 
-char SeqRecord::operator[](unsigned index) {
-  return *matrix[(matrix->num_positions * this->index + index)];
-}
+// char SeqRecord::operator[](unsigned index) {
+//   return *matrix[(matrix->num_positions * this->index + index)];
+// }
 
 /* Matrix Constructor from FastA file format */  
 // Matrix::Matrix(std::string fasta): fasta(fasta) {
