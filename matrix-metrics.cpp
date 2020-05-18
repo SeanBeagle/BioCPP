@@ -20,7 +20,7 @@ class RootMatrix {
     const size_t num_positions;
     const std::string fasta;
     SeqRecord operator[](size_t index);
-    char at(size_t index);
+    char at(size_t record, size_t position);
     static RootMatrix fromFasta(std::string fasta);
   private:
     size_t n = -1;
