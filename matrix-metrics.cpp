@@ -152,7 +152,6 @@ char RootMatrix::at(size_t index) {
 }
 
 
-
 /*******************************************************************************
  class SeqRecord
  ******************************************************************************/
@@ -163,6 +162,7 @@ SeqRecord::SeqRecord(
   : header(header), index(index) {
     std::cout << "new SeqRecord(\"" << header << "\")\n"; // TODO: REMOVE LINE
   }
+
 
 char SeqRecord::operator[](unsigned index) {
   return 'x';
