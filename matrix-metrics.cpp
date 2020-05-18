@@ -131,7 +131,7 @@ RootMatrix RootMatrix::fromFasta(std::string fasta) {
 
 void RootMatrix::addRecord(std::string &header, std::shared_ptr<RootMatrix> matrix) {
   std::shared_ptr<SeqRecord> ptr = SeqRecord(header, ++n, matrix);
-  records.push_back(ptr)
+  records.push_back(ptr);
 }
 
 void RootMatrix::addSequence(std::string &seq) {
@@ -144,11 +144,14 @@ void RootMatrix::addSequence(std::string &seq) {
  ******************************************************************************/
 
 /* SeqRecord Constructor */
-SeqRecord::SeqRecord(std::string header, unsigned index, Matrix* matrix) 
-  : header(header), index(index) {}
+SeqRecord::SeqRecord(
+  std::string header, unsigned index, std::shared_ptr<RootMatrix> matrix) 
+  : header(header), index(index) {
+    std::cout << "SeqRecord()\n";
+  }
 
 char SeqRecord::operator[](unsigned index) {
-  return matrix->at(matrix->numPositions() * this->index + index);
+  return *matrix[(matrix->numPositions() * this->index + index)];
 }
 
 /* Matrix Constructor from FastA file format */  
