@@ -71,10 +71,12 @@ int main(int argc, char* argv[]) {
               << root.num_positions << std::endl;
 
     for (int i = 0; i < root.num_records; ++i) {
-      SeqRecord record = root[i];
       std::cout << root[i].header << std::endl;
     }
-    
+
+    std::cout << "root[i][10] = " << root[i][10] << std::endl;
+
+    return EXIT_SUCCESS;
     //std::cout << "matrix[0][10] = " << root[0][10] << std::endl;
   }
 }
@@ -144,8 +146,8 @@ SeqRecord RootMatrix::operator[](size_t index) {
   return *records[index];
 }
 
-SeqRecord RootMatrix::at(size_t index) {
-  return *records[index];
+char RootMatrix::at(size_t index) {
+  return matrix[index];
 }
 
 
@@ -161,9 +163,9 @@ SeqRecord::SeqRecord(
     std::cout << "SeqRecord()\n";
   }
 
-// char SeqRecord::operator[](unsigned index) {
-//   return *matrix[(matrix->num_positions * this->index + index)];
-// }
+char SeqRecord::operator[](unsigned index) {
+  return matrix.->at(matrix->num_positions * this->index + index);
+}
 
 /*******************************************************************************
  class Matrix
