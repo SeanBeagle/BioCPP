@@ -164,7 +164,10 @@ SeqRecord::SeqRecord(
 
 char SeqRecord::operator[](unsigned index) {
   RootMatrix root = *matrix;
-  return root.at(root.num_positions * this->index + index);
+  std::cout << root.fasta;
+  std::cout << matrix->fasta;
+  return 'x';
+  // return root.at(root.num_positions * this->index + index);
 }
 
 /*******************************************************************************
