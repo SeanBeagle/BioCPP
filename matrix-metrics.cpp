@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
               << root.num_positions << std::endl;
 
     for (int i = 0; i < root.num_records; ++i) {
-      std::cout << root[i].header << std::endl;
+      std::cout << *root[i].header << std::endl;
     }
     
     //std::cout << "matrix[0][10] = " << root[0][10] << std::endl;
