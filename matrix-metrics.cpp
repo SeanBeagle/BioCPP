@@ -38,7 +38,7 @@ class RootMatrix {
     std::vector<SeqRecord> records_;
     size_t n = -1;
     RootMatrix(std::string fasta, size_t num_records, size_t num_positions);
-    void addHeader(std::string &header);
+    void newRecord(std::string &header);
     void addSequence(std::string &seq);
 };
 
@@ -63,12 +63,17 @@ class Matrix {
   public:
     Matrix(size_t num_positions, std::vector<SeqRecord> records);
     Matrix(RootMatrix &root);
-    std::string const fasta;
+    std::string fasta;
     size_t numRecords();
     size_t numPositions();
+    size_t coreSize();
+    size_t numCoreSNP();
+    size_t numSNP();
     void operator+=(SeqRecord);
     SeqRecord operator[](size_t record);
     void toJSON();
+    std::vector<SeqRecord>::const_iterator const begin();
+    std::vector<SeqRecord>::const_iterator const end();
   private:
     size_t num_records_ = records_.size();
     size_t num_positions_;
@@ -128,7 +133,7 @@ RootMatrix::RootMatrix(
   std::string line;
   while (std::getline(file_in, line)) {
     if (line[0] == '>') {
-      addHeader(line);
+      newRecord(line);
     } else {
       addSequence(line);
     }
@@ -162,7 +167,7 @@ RootMatrix RootMatrix::fromFasta(std::string fasta) {
   return RootMatrix(fasta, num_records, this_size);
 }
 
-void RootMatrix::addHeader(std::string &header) {
+void RootMatrix::newRecord(std::string &header) {
   records_.emplace_back(SeqRecord(header, ++n, this));
 }
 
@@ -223,11 +228,11 @@ size_t SeqRecord::operator[](char residue) {
   return residues_[std::toupper(residue)];
 }
 
-size_t SeqRecord::index() {
+size_t SeqRecord::index const() {
   return index_;
 }
 
-std::string SeqRecord::id() {
+std::string SeqRecord::id const() {
   return header_.substr(1, header_.find(" ")-1);
 }
 
@@ -252,9 +257,19 @@ Matrix::Matrix(RootMatrix &root):
 }
 
 void Matrix::toJSON() {
+  std::cout "{";
   for (auto record: records_) {
+    std::cout << "  ";
     record.toJSON();
   }
+  std::cout "}";
+}
+
+std::vector<SeqRecord>::const_iterator const begin() {
+  return records_.begin();
+}
+std::vector<SeqRecord>::const_iterator const end() {
+  return records_.end();
 }
 
 SeqRecord Matrix::operator[](size_t record) {
