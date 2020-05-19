@@ -203,7 +203,7 @@ Matrix::Matrix(RootMatrix &root):
   num_positions_(root.numPositions()), num_records_(root.numRecords()) {
   std::cout << "new Matrix()" << std::endl;
   for (int i = 0; i  < root.numRecords(); ++i) {
-    records_.push_back(root[i]);
+    records_.push_back(&root[i]);
   }
 }
 
