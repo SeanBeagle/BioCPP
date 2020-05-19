@@ -50,7 +50,6 @@ class SeqRecord {
     std::string id();
     size_t index();
     std::string description();
-  protected:
     void countResidues(std::string &seq);
   private:
     std::array<size_t, 127> residues_ = {};
@@ -196,7 +195,7 @@ SeqRecord::SeqRecord(
 
 void SeqRecord::countResidues(std::string &seq) {
   for (auto residue: seq)
-    ++residues_[std::toupper(residue)]
+    ++residues_[std::toupper(residue)];
 }
 
 char SeqRecord::operator[](size_t position) {
@@ -204,7 +203,7 @@ char SeqRecord::operator[](size_t position) {
 }
 
 size_t SeqRecord::operator[](char residue) {
-  return residues_[std::toupper(residue)]
+  return residues_[std::toupper(residue)];
 }
 
 size_t SeqRecord::index() {
