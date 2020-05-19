@@ -228,11 +228,11 @@ size_t SeqRecord::operator[](char residue) {
   return residues_[std::toupper(residue)];
 }
 
-size_t SeqRecord::index const() {
+size_t SeqRecord::index() {
   return index_;
 }
 
-std::string SeqRecord::id const() {
+std::string SeqRecord::id() {
   return header_.substr(1, header_.find(" ")-1);
 }
 
@@ -265,10 +265,10 @@ void Matrix::toJSON() {
   std::cout "}";
 }
 
-std::vector<SeqRecord>::const_iterator const begin() {
+std::vector<SeqRecord>::const_iterator const Matrix::begin() {
   return records_.begin();
 }
-std::vector<SeqRecord>::const_iterator const end() {
+std::vector<SeqRecord>::const_iterator const Matrix::end() {
   return records_.end();
 }
 
