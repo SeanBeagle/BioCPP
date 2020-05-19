@@ -257,12 +257,12 @@ Matrix::Matrix(RootMatrix &root):
 }
 
 void Matrix::toJSON() {
-  std::cout "{";
+  std::cout << "{";
   for (auto record: records_) {
     std::cout << "  ";
     record.toJSON();
   }
-  std::cout "}";
+  std::cout << "}";
 }
 
 std::vector<SeqRecord>::const_iterator const Matrix::begin() {
