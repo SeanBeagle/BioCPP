@@ -1,15 +1,23 @@
+/* matrix-metrics.cpp
+AUTHOR: Sean Beagle
+URL:    www.seanbeagle.com
+        www.stronglab.org
+*/
+
 #include <iostream>
 #include <fstream>
 #include <cstddef>
 #include <string>
 #include <vector>
+#include <array>
+#include <cctype>
 
 // FORWARD DECLARATIONS
 class RootMatrix;
-class Matrix;
 class SeqRecord;
-// class DataFrame;  // TODO(seanbeagle): Use this for matrix stats...
-// class Seq; // TODO(seanbeagle): Use this instead of string for sequences...
+class Matrix;
+class DataFrame;
+class Row;
 
 
 // HEADERS
@@ -38,10 +46,14 @@ class SeqRecord {
   public:
     SeqRecord(std::string header, size_t index, RootMatrix* matrix);
     char operator[](size_t position);
+    size_t operator[](char residue);
     std::string id();
     size_t index();
     std::string description();
+  protected:
+    void countResidues(std::string &seq);
   private:
+    std::array<size_t, 127> residues_ = {};
     std::string header_;
     size_t index_;
     RootMatrix* matrix_;
@@ -62,30 +74,36 @@ class Matrix {
     std::vector<SeqRecord> records_;
 };
 
+class DataFrame {
+  public:
+    DataFrame(size_t size);
+    bool isSNP(size_t position);
+    bool isCoreSNP(size_t position);
+  private:
+    Matrix* matrix_;
+    std::vector<Row> rows_;
+    std::vector<bool> is_snp_;
+    std::vector<bool> is_core_snp_;
+    void calcPosStats();
+    void calcOutlierStats();
 
-// MAIN
+}
+
+class Row {
+  public:
+    Row(SeqRecord *record)
+  private:
+    SeqRecord* record_;
+    size_t unique;
+}
+
+
+// MAIN ============================================
 int main(int argc, char* argv[]) {
   if (argc > 1) {
     std::string fasta = std::string(argv[1]);
     RootMatrix root = RootMatrix::fromFasta(fasta);
-    std::cout << root.fasta() << " = " <<  root.numRecords() << " x " 
-              << root.numPositions() << std::endl;
-
     Matrix matrix = Matrix(root);
-    std::cout << matrix.numRecords() << "x" << matrix.numPositions() << std::endl;
-
-    // print all SeqRecord position 0's
-    for (int i = 0; i < root.numRecords(); ++i) {
-      std::cout << root[i][0] << ",";
-    }
-    std::cout << std::endl;
-    
-    // print SeqRecord ID's
-    for (int i = 0; i < root.numRecords(); ++i) {
-      std::cout << root[i].id() << ", ";
-    }
-    std::cout << std::endl;
-
     return EXIT_SUCCESS;
   }
 }
@@ -144,6 +162,7 @@ void RootMatrix::addHeader(std::string &header) {
 
 void RootMatrix::addSequence(std::string &seq) {
   matrix_ += seq;
+  records_.back().countResidues(std::string seq);
 }
 
 SeqRecord RootMatrix::operator[](size_t record) {
@@ -171,13 +190,21 @@ std::string RootMatrix::fasta() {
  class SeqRecord
  ******************************************************************************/
 
-/* SeqRecord Constructor */
 SeqRecord::SeqRecord(
   std::string header, size_t index, RootMatrix* matrix) 
   : header_(header), index_(index), matrix_(matrix) {}
 
+void SeqRecord::countResidues(std::string &seq) {
+  for (auto residue: seq)
+    ++residues_[std::toupper(residue)]
+}
+
 char SeqRecord::operator[](size_t position) {
   return (*matrix_)(index_, position);
+}
+
+size_t operator[](char residue) {
+  return residues_[std::toupper(residue)]
 }
 
 size_t SeqRecord::index() {
@@ -191,18 +218,19 @@ std::string SeqRecord::id() {
 std::string SeqRecord::description() {
   return header_.substr(header_.find(" ")+1);
 }
-
+  
 
 /*******************************************************************************
  class Matrix
 *******************************************************************************/
 
-Matrix::Matrix(size_t num_positions, std::vector<SeqRecord*> records) {}
+/* Construct Matrix from SeqRecord vector */
+Matrix::Matrix(size_t num_positions, std::vector<SeqRecord> records) {}
 
+/* Construct Matrix from all RootMatrix records */
 Matrix::Matrix(RootMatrix &root): 
   num_positions_(root.numPositions()), num_records_(root.numRecords()) {
-  std::cout << "new Matrix()" << std::endl;
-  for (int i = 0; i  < root.numRecords()-1; ++i) {
+  for (int i = 0; i  < root.numRecords(); ++i) {
     records_.push_back(root[i]);
   }
 }
@@ -214,26 +242,3 @@ size_t Matrix::numRecords() {
 size_t Matrix::numPositions() {
   return num_positions_;
 }
-
-
-/* Matrix Constructor from FastA file format */  
-// Matrix::Matrix(std::string fasta): fasta(fasta) {
-//   this->matrix = (new std::string());
-//   std::ifstream file(fasta);
-//   std::string line;
-//   while (std::getline(file, line)) {
-//     if (line[0] == '>') {
-//       records.emplace_back(SeqRecord(line, num_records++, this));
-//     } else {
-//       num_positions += line.length();
-//       *matrix += line;
-//     }
-//   }
-//   std::cout << "Finished loading " << matrix->size() << " nucleotides\n";
-// } 
-
-
-
-
-
-
