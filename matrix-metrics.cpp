@@ -197,7 +197,7 @@ std::string SeqRecord::description() {
  class Matrix
 *******************************************************************************/
 
-Matrix::Matrix(std::vector<SeqRecord*> records) {}
+Matrix::Matrix(size_t num_positions, std::vector<SeqRecord*> records) {}
 
 Matrix::Matrix(RootMatrix &root): 
   num_positions_(root.numPositions()), num_records_(root.numRecords()) {
