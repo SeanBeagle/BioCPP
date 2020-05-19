@@ -61,7 +61,7 @@ class SeqRecord {
 
 class Matrix {
   public:
-    Matrix(size_t num_positions, std::vector<SeqRecord*> records);
+    Matrix(size_t num_positions, std::vector<SeqRecord> records);
     Matrix(RootMatrix &root);
     std::string const fasta;
     size_t numRecords();
@@ -203,7 +203,7 @@ char SeqRecord::operator[](size_t position) {
   return (*matrix_)(index_, position);
 }
 
-size_t operator[](char residue) {
+size_t SeqRecord::operator[](char residue) {
   return residues_[std::toupper(residue)]
 }
 
