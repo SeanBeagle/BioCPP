@@ -208,7 +208,7 @@ void SeqRecord::toJSON() {
   std::cout << "{\"id\": " << "\"" << id() << "\"";
   for (int i = 0; i < residues_.size(); ++i) {
     if (residues_[i] > 0) {
-      std::cout << << ", \"" (char)i << "\": " << residues_[i];
+      std::cout << ", \"" << (char)i << "\": " << residues_[i];
     }
   }
   std::cout << "}" << std::endl;
