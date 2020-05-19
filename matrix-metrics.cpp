@@ -68,6 +68,7 @@ class Matrix {
     size_t numPositions();
     void operator+=(SeqRecord);
     SeqRecord operator[](size_t record);
+    void toJSON();
   private:
     size_t num_records_ = records_.size();
     size_t num_positions_;
@@ -107,7 +108,7 @@ int main(int argc, char* argv[]) {
     std::cout << "main()\n";
     std::cout << "matrix[1]['A'] = " << matrix[1]['A'] << std::endl;
     std::cout << "matrix[1]['a'] = " << matrix[1]['a'] << std::endl;
-    matrix[1].toJSON();
+    matrix.toJSON();
 
     return EXIT_SUCCESS;
   }
@@ -247,6 +248,12 @@ Matrix::Matrix(RootMatrix &root):
   num_positions_(root.numPositions()), num_records_(root.numRecords()) {
   for (int i = 0; i  < root.numRecords(); ++i) {
     records_.push_back(root[i]);
+  }
+}
+
+void Matrix::toJSON() {
+  for (auto record: records_) {
+    record.toJSON();
   }
 }
 
