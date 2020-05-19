@@ -110,10 +110,9 @@ int main(int argc, char* argv[]) {
     RootMatrix root = RootMatrix::fromFasta(fasta);
     Matrix matrix = Matrix(root);
     
-    std::cout << "main()\n";
-    std::cout << "matrix[1]['A'] = " << matrix[1]['A'] << std::endl;
-    std::cout << "matrix[1]['a'] = " << matrix[1]['a'] << std::endl;
-    matrix.toJSON();
+    for (auto record: Matrix) {
+      record.toJSON();
+    }
 
     return EXIT_SUCCESS;
   }
@@ -257,7 +256,7 @@ Matrix::Matrix(RootMatrix &root):
 }
 
 void Matrix::toJSON() {
-  std::cout << "{";
+  std::cout << "{" << std::endl;
   for (auto record: records_) {
     std::cout << "  ";
     record.toJSON();
