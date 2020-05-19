@@ -210,8 +210,8 @@ void SeqRecord::printResidues() {
     if (residues_[i] > 0) {
       std::cout << (char)i << ":" << residues_[i] << ", ";
     }
-    std::cout << std::endl;
   }
+  std::cout << std::endl;
 }
 
 char SeqRecord::operator[](size_t position) {
