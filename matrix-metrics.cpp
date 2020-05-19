@@ -6,6 +6,7 @@ URL:    www.seanbeagle.com
 
 #include <iostream>
 #include <fstream>
+#include <>
 #include <cstddef>
 #include <string>
 #include <vector>
@@ -51,7 +52,7 @@ class SeqRecord {
     size_t index();
     std::string description();
     void countResidues(std::string &seq);
-    void toJSON();
+    void json();
   private:
     std::array<size_t, 127> residues_ = {};
     std::string header_;
@@ -64,11 +65,11 @@ class Matrix {
     Matrix(size_t num_positions, std::vector<SeqRecord> records);
     Matrix(RootMatrix &root);
     std::string fasta;
-    size_t numRecords();
-    size_t numPositions();
-    size_t coreSize();
-    size_t numCoreSNP();
-    size_t numSNP();
+    size_t const numRecords();
+    size_t const numPositions();
+    size_t const coreSize();
+    size_t const numCoreSNP();
+    size_t const numSNP();
     void operator+=(SeqRecord);
     SeqRecord operator[](size_t record);
     void toJSON();
@@ -78,6 +79,7 @@ class Matrix {
     size_t num_records_ = records_.size();
     size_t num_positions_;
     std::vector<SeqRecord> records_;
+    DataFrame dataframe_;
 };
 
 class DataFrame {
@@ -111,7 +113,7 @@ int main(int argc, char* argv[]) {
     Matrix matrix = Matrix(root);
     
     for (auto record: matrix) {
-      record.toJSON();
+      std::cout << record.json();
     }
 
     return EXIT_SUCCESS;
@@ -209,14 +211,16 @@ void SeqRecord::countResidues(std::string &seq) {
     ++residues_[std::toupper(residue)];
 }
 
-void SeqRecord::toJSON() {
-  std::cout << "{\"id\": " << "\"" << id() << "\"";
+void SeqRecord::json() {
+  std::stringstream ss;
+  ss << "{\"id\": " << "\"" << id() << "\"";
   for (int i = 0; i < residues_.size(); ++i) {
     if (residues_[i] > 0) {
-      std::cout << ", \"" << (char)i << "\": " << residues_[i];
+      ss << ", \"" << (char)i << "\": " << residues_[i];
     }
   }
-  std::cout << "}" << std::endl;
+  ss << "}" << std::endl;
+  return ss.str();
 }
 
 char SeqRecord::operator[](size_t position) {
@@ -257,9 +261,8 @@ Matrix::Matrix(RootMatrix &root):
 
 void Matrix::toJSON() {
   std::cout << "{" << std::endl;
-  for (auto record: records_) {
-    std::cout << "  ";
-    record.toJSON();
+  for (auto &record: records_) {
+    std::cout << "  " << record.json();
   }
   std::cout << "}";
 }
@@ -275,10 +278,10 @@ SeqRecord Matrix::operator[](size_t record) {
   return records_[record];
 }
 
-size_t Matrix::numRecords() {
+size_t const Matrix::numRecords() {
   return records_.size();
 }
 
-size_t Matrix::numPositions() {
+size_t const Matrix::numPositions() {
   return num_positions_;
 }
