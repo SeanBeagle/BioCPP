@@ -238,6 +238,10 @@ Matrix::Matrix(RootMatrix &root):
   }
 }
 
+SeqRecord Matrix::operator[](size_t record) {
+  return records_[record];
+}
+
 size_t Matrix::numRecords() {
   return records_.size();
 }
