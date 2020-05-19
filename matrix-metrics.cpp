@@ -91,7 +91,7 @@ class DataFrame {
 
 class Row {
   public:
-    Row(SeqRecord *record)
+    Row(SeqRecord *record);
   private:
     SeqRecord* record_;
     size_t unique;
@@ -162,7 +162,7 @@ void RootMatrix::addHeader(std::string &header) {
 
 void RootMatrix::addSequence(std::string &seq) {
   matrix_ += seq;
-  records_.back().countResidues(std::string seq);
+  records_.back().countResidues(seq);
 }
 
 SeqRecord RootMatrix::operator[](size_t record) {
