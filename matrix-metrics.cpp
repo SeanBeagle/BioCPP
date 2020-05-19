@@ -3,7 +3,6 @@
 #include <cstddef>
 #include <string>
 #include <vector>
-#include <memory>
 
 // FORWARD DECLARATIONS
 class RootMatrix;
@@ -19,8 +18,7 @@ class RootMatrix {
     size_t numRecords();
     size_t numPositions();
     std::string fasta();
-
-    SeqRecord operator[](size_t index);
+    SeqRecord operator[](size_t record);
     char operator()(size_t record, size_t position);
     char at(size_t record, size_t position); // Replaced by operator[]
     static RootMatrix fromFasta(std::string fasta);
@@ -52,17 +50,16 @@ class SeqRecord {
 class Matrix {
   public:
     Matrix(size_t num_positions, std::vector<SeqRecord*> records);
+    Matrix(RootMatrix &root);
     std::string const fasta;
-    unsigned numRecords();
-    unsigned numPositions();
+    size_t numRecords();
+    size_t numPositions();
     void operator+=(SeqRecord);
-    void operator+=(std::string sequence);
-    SeqRecord operator[](size_t index);
-    char at(unsigned index);
+    SeqRecord operator[](size_t record);
   private:
-    size_t num_records = 0;
-    size_t num_positions = 0;
-    std::vector<SeqRecord*> records;
+    size_t num_records_ = records_.size();
+    size_t num_positions_;
+    std::vector<SeqRecord*> records_;
 };
 
 
@@ -73,6 +70,9 @@ int main(int argc, char* argv[]) {
     RootMatrix root = RootMatrix::fromFasta(fasta);
     std::cout << root.fasta() << " = " <<  root.numRecords() << " x " 
               << root.numPositions() << std::endl;
+
+    Matrix matrix = Matrix(root);
+    std::cout << matrix.numRecords() << "x" << matrix.numPositions << std::endl;
 
     // print all SeqRecord position 0's
     for (int i = 0; i < root.numRecords(); ++i) {
@@ -146,19 +146,26 @@ void RootMatrix::addSequence(std::string &seq) {
   matrix_ += seq;
 }
 
-SeqRecord RootMatrix::operator[](size_t index) {
-  // std::cout << "... RootMatrix[" << index << "]\n"; // TODO: REMOVE LINE
-  return records_[index];
+SeqRecord RootMatrix::operator[](size_t record) {
+  return records_[record];
 }
 
 char RootMatrix::operator()(size_t record, size_t position) {
   return matrix_[record*numPositions() + position];
 }
 
-// member function getters
-size_t RootMatrix::numRecords() {return this->num_records_;}
-size_t RootMatrix::numPositions() {return this->num_positions_;}
-std::string RootMatrix::fasta() {return this->fasta_;}
+size_t RootMatrix::numRecords() {
+  return records_.size();
+}
+
+size_t RootMatrix::numPositions() {
+  return num_positions_;
+}
+
+std::string RootMatrix::fasta() {
+  return fasta_;
+}
+
 
 /*******************************************************************************
  class SeqRecord
@@ -173,7 +180,9 @@ char SeqRecord::operator[](size_t position) {
   return (*matrix_)(index_, position);
 }
 
-size_t SeqRecord::index() {return index_;}
+size_t SeqRecord::index() {
+  return index_;
+}
 
 std::string SeqRecord::id() {
   return header_.substr(1, header_.find(" ")-1);
@@ -186,7 +195,26 @@ std::string SeqRecord::description() {
 
 /*******************************************************************************
  class Matrix
- ******************************************************************************/
+*******************************************************************************/
+
+Matrix::Matrix(std::vector<SeqRecord*> records) {}
+
+Matrix::Matrix(RootMatrix &root): 
+  num_positions_(root.numPositions()), num_records_(root.numRecords()) {
+  std::cout << "new Matrix()" << std::endl;
+  for (int i = 0; i  < root.numRecords(); ++i) {
+    records_.push_back(*root[i]);
+  }
+}
+
+size_t Matrix::numRecords() {
+  return records_.size();
+}
+
+size_t Matrix::numPositions() {
+  return num_positions_;
+}
+
 
 /* Matrix Constructor from FastA file format */  
 // Matrix::Matrix(std::string fasta): fasta(fasta) {
@@ -207,9 +235,5 @@ std::string SeqRecord::description() {
 
 
 
-/* Matrix getters */
-// char Matrix::at(unsigned index) { return matrix->at(index); }
-// SeqRecord Matrix::operator[](unsigned index) { return records[index]; }
-// unsigned Matrix::numRecords() { return num_records; }
-// unsigned Matrix::numPositions() { return num_positions; }
+
 
