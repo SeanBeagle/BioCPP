@@ -51,7 +51,7 @@ class SeqRecord {
     size_t index();
     std::string description();
     void countResidues(std::string &seq);
-    void printResidues();
+    void toJSON();
   private:
     std::array<size_t, 127> residues_ = {};
     std::string header_;
@@ -107,7 +107,7 @@ int main(int argc, char* argv[]) {
     std::cout << "main()\n";
     std::cout << "matrix[1]['A'] = " << matrix[1]['A'] << std::endl;
     std::cout << "matrix[1]['a'] = " << matrix[1]['a'] << std::endl;
-    matrix[1].printResidues();
+    matrix[1].toJSON();
 
     return EXIT_SUCCESS;
   }
@@ -204,14 +204,14 @@ void SeqRecord::countResidues(std::string &seq) {
     ++residues_[std::toupper(residue)];
 }
 
-void SeqRecord::printResidues() {
-  std::cout << "Printing Residues for " << id() << std::endl;
+void SeqRecord::toJSON() {
+  std::cout << "{\"id\": " << "\"" << id() << "\"";
   for (int i = 0; i < residues_.size(); ++i) {
     if (residues_[i] > 0) {
-      std::cout << (char)i << ":" << residues_[i] << ", ";
+      std::cout << << ", \"" (char)i << "\": " << residues_[i];
     }
   }
-  std::cout << std::endl;
+  std::cout << "}" << std::endl;
 }
 
 char SeqRecord::operator[](size_t position) {
