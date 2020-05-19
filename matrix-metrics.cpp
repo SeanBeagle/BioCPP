@@ -202,7 +202,7 @@ Matrix::Matrix(size_t num_positions, std::vector<SeqRecord*> records) {}
 Matrix::Matrix(RootMatrix &root): 
   num_positions_(root.numPositions()), num_records_(root.numRecords()) {
   std::cout << "new Matrix()" << std::endl;
-  for (int i = 0; i  < root.numRecords(); ++i) {
+  for (int i = 0; i  < root.numRecords()-1; ++i) {
     records_.push_back(root[i]);
   }
 }
