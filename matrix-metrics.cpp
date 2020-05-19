@@ -6,7 +6,7 @@ URL:    www.seanbeagle.com
 
 #include <iostream>
 #include <fstream>
-#include <>
+#include <sstream>
 #include <cstddef>
 #include <string>
 #include <vector>
