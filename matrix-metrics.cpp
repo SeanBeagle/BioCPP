@@ -204,7 +204,7 @@ void SeqRecord::countResidues(std::string &seq) {
     ++residues_[std::toupper(residue)];
 }
 
-void printResidues() {
+void SeqRecord::printResidues() {
   std::cout << "Printing Residues for " << id() << std::endl;
   for (int i = 0; i < residues_.size(); ++i) {
     if (residues_[i] > 0) {
