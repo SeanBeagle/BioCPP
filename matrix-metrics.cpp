@@ -52,7 +52,7 @@ class SeqRecord {
     size_t index();
     std::string description();
     void countResidues(std::string &seq);
-    void json();
+    std::string const json();
   private:
     std::array<size_t, 127> residues_ = {};
     std::string header_;
@@ -211,7 +211,7 @@ void SeqRecord::countResidues(std::string &seq) {
     ++residues_[std::toupper(residue)];
 }
 
-void SeqRecord::json() {
+std::string const SeqRecord::json() {
   std::stringstream ss;
   ss << "{\"id\": " << "\"" << id() << "\"";
   for (int i = 0; i < residues_.size(); ++i) {
