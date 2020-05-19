@@ -110,7 +110,7 @@ int main(int argc, char* argv[]) {
     RootMatrix root = RootMatrix::fromFasta(fasta);
     Matrix matrix = Matrix(root);
     
-    for (auto record: Matrix) {
+    for (auto record: matrix) {
       record.toJSON();
     }
 
