@@ -103,6 +103,7 @@ int main(int argc, char* argv[]) {
     RootMatrix root = RootMatrix::fromFasta(fasta);
     Matrix matrix = Matrix(root);
     
+    std::cout << "main()\n";
     std::cout << "matrix[1]['A'] = "<< matrix[1]['A'] << std::endl;
     std::cout << "matrix[1]['a'] = "<< matrix[1]['a'] << std::endl;
 
