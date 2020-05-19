@@ -72,7 +72,7 @@ int main(int argc, char* argv[]) {
               << root.numPositions() << std::endl;
 
     Matrix matrix = Matrix(root);
-    std::cout << matrix.numRecords() << "x" << matrix.numPositions << std::endl;
+    std::cout << matrix.numRecords() << "x" << matrix.numPositions() << std::endl;
 
     // print all SeqRecord position 0's
     for (int i = 0; i < root.numRecords(); ++i) {
