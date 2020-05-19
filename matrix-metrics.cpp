@@ -85,8 +85,7 @@ class DataFrame {
     std::vector<bool> is_core_snp_;
     void calcPosStats();
     void calcOutlierStats();
-
-}
+};
 
 class Row {
   public:
@@ -94,7 +93,7 @@ class Row {
   private:
     SeqRecord* record_;
     size_t unique;
-}
+};
 
 
 // MAIN ============================================
